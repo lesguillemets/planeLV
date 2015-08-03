@@ -4,7 +4,7 @@ var initialPopMax = 10;
 var aColour = "#ffaa00";
 var bColour = "#00aaFF";
 var gridSize = 2;
-}}}
+// }}}
 
 // {{{ SETUP
 function setUp(wCanv0,wCanv1,gCanv){
