@@ -4,6 +4,8 @@ var initialPopMax = 10;
 var aColour = "#ffaa00";
 var bColour = "#00aaFF";
 var gridSize = 2;
+// draws the world every n steps
+var drawEvery = 10;
 // }}}
 
 // {{{ SETUP
@@ -13,7 +15,8 @@ function setUp(wCanv0,wCanv1,gCanv){
     r0:1, r1:3,
     w0:undefined, maxw0: 0,
     w1:undefined, maxw1: 0,
-    wCanv0 : wCanv0, wCanv1 : wCanv1, gCanv : gCanv
+    wCanv0 : wCanv0, wCanv1 : wCanv1, gCanv : gCanv,
+    wCtx0:undefined, wCtx1:undefined, gCtx:undefined
   };
   // prepare contexts
   _w['wCtx0'] = wCanv0.getContext('2d');
