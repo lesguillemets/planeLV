@@ -6,13 +6,14 @@ var bColour = "#00aaFF";
 var gridSize = 4;
 // draws the world every n steps
 var drawEvery = 50;
+var graphEvery = 5;
 var dt = 0.01;
 var moveRatio = 0.01;
 // }}}
 
 // {{{ SETUP
 function setUp(wCanv0,wCanv1,gCanv){
-  var alpha = 1.1, beta=1.1; k0=200; k1=200; r0=1.02;r1=1.1;
+  var alpha = 2.1, beta=2.1; k0=200; k1=200; r0=1.02;r1=1.1;
   var _w = {
     alpha:alpha, beta:beta, k0:k0, k1:k1,
     r0:r0, r1:r1,
@@ -21,7 +22,7 @@ function setUp(wCanv0,wCanv1,gCanv){
     wCanv0 : wCanv0, wCanv1 : wCanv1, gCanv : gCanv,
     wCtx0:undefined, wCtx1:undefined, gCtx:undefined,
     f0: undefined, f1:undefined,
-    options : { method:"moving", init:"rl"}
+    options : { method:"moving", init:"random"}
   };
   // prepare contexts
   _w['wCtx0'] = wCanv0.getContext('2d');
@@ -168,9 +169,14 @@ function freshWorld(w){
 
 
 function mainLoop(w){
+  var gC = 0;
   for (var i=0; i<drawEvery; i++){
     updateWorld(w);
-    drawGraph(w);
+    if (gC === graphEvery){
+      drawGraph(w);
+      gC = 0;
+    }
+    gC ++;
   }
   freshWorld(w);
   showWorld(w);
