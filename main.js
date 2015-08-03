@@ -5,7 +5,7 @@ var aColour = "#ffaa00";
 var bColour = "#00aaFF";
 var gridSize = 4;
 // draws the world every n steps
-var drawEvery = 50;
+var drawEvery = 20;
 var dt = 0.01;
 var moveRatio = 0.01;
 // }}}
@@ -21,7 +21,7 @@ function setUp(wCanv0,wCanv1,gCanv){
     wCanv0 : wCanv0, wCanv1 : wCanv1, gCanv : gCanv,
     wCtx0:undefined, wCtx1:undefined, gCtx:undefined,
     f0: undefined, f1:undefined,
-    options : { method:"moving" }
+    options : { method:"moving", init:"random"}
   };
   // prepare contexts
   _w['wCtx0'] = wCanv0.getContext('2d');
@@ -43,15 +43,26 @@ function setUp(wCanv0,wCanv1,gCanv){
     w0[i] = new Array(size);
     w1[i] = new Array(size);
     for(var j=0; j<size; j++){
-      // initialise with a random value
-      var w0ij = Math.floor(Math.random()*initialPopMax);
-        w0[i][j] = w0ij;
-        totalw0 += w0ij;
-        if (w0ij > _w.maxw0) { _w.maxw0 = w0ij ;}
-      var w1ij = Math.floor(Math.random()*initialPopMax);
-        w1[i][j] = w1ij;
-        totalw1 += w1ij;
-        if (w1ij > _w.maxw1) { _w.maxw1 = w1ij ;}
+      var w0ij, w1ij;
+      if (_w.options.init === "random"){
+        // initialise with a random value
+        w0ij = Math.floor(Math.random()*initialPopMax);
+        w1ij = Math.floor(Math.random()*initialPopMax);
+      }
+      else if (_w.options.init === "rl"){
+        if (j < size/2){
+          w0ij = 0; w1ij = 10;
+        }
+        else {
+          w1ij = 0; w0ij = 10;
+        }
+      }
+      w0[i][j] = w0ij;
+      totalw0 += w0ij;
+      if (w0ij > _w.maxw0) { _w.maxw0 = w0ij ;}
+      w1[i][j] = w1ij;
+      totalw1 += w1ij;
+      if (w1ij > _w.maxw1) { _w.maxw1 = w1ij ;}
     }
   }
   _w.w0 = w0;
