@@ -11,7 +11,7 @@ var dt = 0.01;
 
 // {{{ SETUP
 function setUp(wCanv0,wCanv1,gCanv){
-  var alpha = 1.4, beta=1.9; k0=100; k1=100; r0=2.0;r1=2.0;
+  var alpha = 1.9, beta=1.9; k0=100; k1=100; r0=2.0;r1=2.0;
   var _w = {
     alpha:alpha, beta:beta, k0:k0, k1:k1,
     r0:r0, r1:r1,
@@ -66,8 +66,8 @@ function showWorld(w){
       w.wCtx0.fillRect(i*gridSize,j*gridSize,gridSize,gridSize/2);
       // draw for B
       // w.wCtx1.fillStyle = "rgba(0," + (Math.floor(w.w1[i][j]*255/m1)) + ",0,0.5)";
-      w.wCtx1.fillStyle = "rgb(0," + (Math.floor(w.w1[i][j]*255/m1)) + ",0)";
-      w.wCtx1.fillRect(i*gridSize,j*gridSize+(gridSize/2),gridSize,gridSize/2);
+      w.wCtx0.fillStyle = "rgb(0," + (Math.floor(w.w1[i][j]*255/m1)) + ",0)";
+      w.wCtx0.fillRect(i*gridSize,j*gridSize+(gridSize/2),gridSize,gridSize/2);
     }
   }
 } // }}}

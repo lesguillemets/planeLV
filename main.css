@@ -32,10 +32,10 @@ canvas#graph{
     padding-top:300px;
 }
 
-#canv0 {
+#world0 {
     z-index:1;
 }
-#canv1 {
+#world1 {
     z-index:0;
 }
 
