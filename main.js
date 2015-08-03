@@ -11,7 +11,7 @@ var dt = 0.01;
 
 // {{{ SETUP
 function setUp(wCanv0,wCanv1,gCanv){
-  var alpha = 3.9, beta=2.9; k0=200; k1=200; r0=2.0;r1=2.0;
+  var alpha = 3.0, beta=2.7; k0=200; k1=200; r0=2.0;r1=2.0;
   var _w = {
     alpha:alpha, beta:beta, k0:k0, k1:k1,
     r0:r0, r1:r1,
@@ -80,6 +80,20 @@ function showWorld(w){
   }
 } // }}}
 
+function drawGraph(w){
+  // shift towards right
+  var gCanv = w.gCanv;
+  var buf = document.createElement('canvas');
+  buf.width = gCanv.width; buf.height = gCanv.height;
+  buf.getContext('2d').drawImage(gCanv,0,0);
+  gCanv.width = gCanv.width;
+  w.gCtx.drawImage(buf,1,0);
+  w.gCtx.fillStyle = "#ff0000";
+  w.gCtx.fillRect(0,Math.floor(gCanv.height-w.totalw0/(5000)),1,1);
+  w.gCtx.fillStyle = "#00ff00";
+  w.gCtx.fillRect(0,Math.floor(gCanv.height-w.totalw1/(5000)),1,1);
+}
+
 function updateWorld(w){
   var nw0 = new Array(size);
   var nw1 = new Array(size);
@@ -140,10 +154,11 @@ function freshWorld(w){
 function mainLoop(w){
   for (var i=0; i<drawEvery; i++){
     updateWorld(w);
+    drawGraph(w);
   }
   freshWorld(w);
   showWorld(w);
-  console.log(w.maxw0);
+  console.log("maxw0 " + w.maxw0 + " \t and totalw0" + w.totalw0);
   setTimeout(function(){mainLoop(w);},200);
 }
 
