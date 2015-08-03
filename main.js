@@ -11,7 +11,7 @@ var dt = 0.5;
 
 // {{{ SETUP
 function setUp(wCanv0,wCanv1,gCanv){
-  var alpha = 0.01, beta=0.02; k0=100; k1=300; r0=8;r1=5;
+  var alpha = 0.1, beta=0.2; k0=100; k1=300; r0=1.9;r1=1.4;
   var _w = {
     alpha:alpha, beta:beta, k0:k0, k1:k1,
     r0:r0, r1:r1,
@@ -61,10 +61,10 @@ function showWorld(w){
   for (var i=0; i<size;i++){
     for(var j=0; j<size; j++){
       // draw for A
-      w.wCtx0.fillStyle = "rgba(" + (w.w0[i][j]*255/m0) + ",0,0,0.5)";
+      w.wCtx0.fillStyle = "rgba(" + (Math.floor(w.w0[i][j]*255/m0)) + ",0,0,0.5)";
       w.wCtx0.fillRect(i*gridSize,j*gridSize,gridSize,gridSize);
       // draw for B
-      w.wCtx1.fillStyle = "rgba(0," + (w.w1[i][j]*255/m1) + ",0,0.5)";
+      w.wCtx1.fillStyle = "rgba(0," + (Math.floor(w.w1[i][j]*255/m1)) + ",0,0.5)";
       w.wCtx1.fillRect(i*gridSize,j*gridSize,gridSize,gridSize);
     }
   }
@@ -88,9 +88,17 @@ function updateWorld(w){
         }
       }
       // }}}
+      var nmaxw0 = 0;
+      var nmaxw1 = 0;
       // dx/dt = r0(1- neighboursx*alpha neighboursy)*x
-      nw0[i][j] = w.w0[i][j] * (1 + w.f0(neighbours0,neighbours1)/neighbours0 * dt);
-      nw1[i][j] = w.w1[i][j] * (1 + w.f1(neighbours0,neighbours1)/neighbours1 * dt);
+      var nw0ij = w.w0[i][j] * (1 + w.f0(neighbours0,neighbours1)/neighbours0 * dt);
+      // var nw0ij = w.w0[i][j] + w.f0(neighbours0,neighbours1)*dt;
+        nw0[i][j] = nw0ij;
+        if (nw0ij > nmaxw0) { nmaxw0 = nw0ij ;}
+      var nw1ij = w.w1[i][j] * (1 + w.f1(neighbours0,neighbours1)/neighbours1 * dt);
+      // var nw1ij = w.w1[i][j] + w.f1(neighbours0,neighbours1)*dt;
+        nw1[i][j] = nw1ij;
+        if (nw1ij > nmaxw1) { nmaxw1 = nw1ij ;}
     }
   }
   // border are set to zero
@@ -102,12 +110,22 @@ function updateWorld(w){
   }
   w.w0 = nw0;
   w.w1 = nw1;
+  w.maxw0 = nmaxw0;
+  w.maxw1 = nmaxw1;
+  console.log(nmaxw0);
   return 0;
+}
+
+function freshWorld(w){
+  w.wCanv0.width = w.wCanv0.width;
+  w.wCanv1.height = w.wCanv1.height;
 }
 
 
 function mainLoop(w){
+  for (var i=0; i<12; i++){
     updateWorld(w);
+  }
   showWorld(w);
 }
 
