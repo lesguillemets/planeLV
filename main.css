@@ -1,0 +1,45 @@
+div.options{
+    margin:10px 30px 0 0;
+}
+
+canvas{
+    border:1px solid black;
+}
+
+div#worldContainer{
+    position: relative;
+    width:800px;
+    height:800px;
+    clear: both;
+}
+
+div#canvContainer{
+    position: relative;
+    width:1000px;
+    height:200px;
+    clear: both;
+}
+
+canvas.world{
+    position: absolute;
+    width:800px;
+    height:800px;
+}
+
+canvas#graph{
+    width:1000px;
+    height:200px;
+    padding-top:300px;
+}
+
+#canv0 {
+    z-index:1;
+}
+#canv1 {
+    z-index:0;
+}
+
+
+#nth {
+    width:5em;
+}
