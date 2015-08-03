@@ -6,22 +6,32 @@ var bColour = "#00aaFF";
 var gridSize = 2;
 // draws the world every n steps
 var drawEvery = 10;
+var dt = 0.5;
 // }}}
 
 // {{{ SETUP
 function setUp(wCanv0,wCanv1,gCanv){
+  var alpha = 0.01, beta=0.02; k0=100; k1=300; r0=8;r1=5;
   var _w = {
-    alpha:1, beta:2, k0:1, k1:3,
-    r0:1, r1:3,
+    alpha:alpha, beta:beta, k0:k0, k1:k1,
+    r0:r0, r1:r1,
     w0:undefined, maxw0: 0,
     w1:undefined, maxw1: 0,
     wCanv0 : wCanv0, wCanv1 : wCanv1, gCanv : gCanv,
-    wCtx0:undefined, wCtx1:undefined, gCtx:undefined
+    wCtx0:undefined, wCtx1:undefined, gCtx:undefined,
+    f0: undefined, f1:undefined
   };
   // prepare contexts
   _w['wCtx0'] = wCanv0.getContext('2d');
   _w['wCtx1'] = wCanv1.getContext('2d');
   _w['gCtx'] = gCanv.getContext('2d');
+  // updaters
+  _w.f0 = function(x,y){
+    return r0*(1-(x+alpha*y)/k0)*x;
+  };
+  _w.f1 = function(x,y){
+    return r1*(1-(beta*x+y)/k1)*y;
+  };
   // initialise population
   var w0 = new Array(size);
   var w1 = new Array(size);
@@ -60,8 +70,44 @@ function showWorld(w){
   }
 } // }}}
 
+function updateWorld(w){
+  var nw0 = new Array(size);
+  var nw1 = new Array(size);
+  // updating inside
+  for (var i=1; i<(size-1); i++){
+    nw0[i] = new Array(size);
+    nw1[i] = new Array(size);
+    for(var j=1; j<(size-1); j++){
+      // how many neighbours are there? // {{{
+      var neighbours0 = 0;
+      var neighbours1 = 0;
+      for (var di=-1; di<2; di++){
+        for (var dj=-1; dj<2; dj++){
+          neighbours0 += w.w0[i+di][j+dj];
+          neighbours1 += w.w1[i+di][j+dj];
+        }
+      }
+      // }}}
+      // dx/dt = r0(1- neighboursx*alpha neighboursy)*x
+      nw0[i][j] = w.w0[i][j] * (1 + w.f0(neighbours0,neighbours1)/neighbours0 * dt);
+      nw1[i][j] = w.w1[i][j] * (1 + w.f1(neighbours0,neighbours1)/neighbours1 * dt);
+    }
+  }
+  // border are set to zero
+  nw0[0] = new Array(size); nw1[0] = new Array (size);
+  nw0[size-1] = new Array(size); nw1[size-1] = new Array (size);
+  for (var j=0;j<size;j++){
+    nw0[0][j]=0; nw0[size-1][j] = 0; nw0[j][0]=0; nw0[j][size-1]=0;
+    nw1[0][j]=0; nw1[size-1][j] = 0; nw1[j][0]=0; nw1[j][size-1]=0;
+  }
+  w.w0 = nw0;
+  w.w1 = nw1;
+  return 0;
+}
+
 
 function mainLoop(w){
+    updateWorld(w);
   showWorld(w);
 }
 
