@@ -7,11 +7,12 @@ var gridSize = 4;
 // draws the world every n steps
 var drawEvery = 50;
 var dt = 0.01;
+var moveRatio = 0.01;
 // }}}
 
 // {{{ SETUP
 function setUp(wCanv0,wCanv1,gCanv){
-  var alpha = 3.0, beta=2.7; k0=200; k1=200; r0=2.0;r1=2.0;
+  var alpha = 2.0, beta=2.0; k0=200; k1=200; r0=2.0;r1=2.0;
   var _w = {
     alpha:alpha, beta:beta, k0:k0, k1:k1,
     r0:r0, r1:r1,
@@ -20,7 +21,7 @@ function setUp(wCanv0,wCanv1,gCanv){
     wCanv0 : wCanv0, wCanv1 : wCanv1, gCanv : gCanv,
     wCtx0:undefined, wCtx1:undefined, gCtx:undefined,
     f0: undefined, f1:undefined,
-    options : { method:"simple" }
+    options : { method:"moving" }
   };
   // prepare contexts
   _w['wCtx0'] = wCanv0.getContext('2d');
@@ -124,6 +125,10 @@ function updateWorld(w){
         nw1ij = w.w1[i][j] * (1 + w.f1(neighbours0,neighbours1)/neighbours1 * dt);
         // var nw0ij = w.w0[i][j] + w.f0(neighbours0,neighbours1)*dt;
         // var nw1ij = w.w1[i][j] + w.f1(neighbours0,neighbours1)*dt;
+      }
+      else if (w.options.method === "moving"){
+        nw0ij = ((1-moveRatio) * w.w0[i][j] + moveRatio* (neighbours0 - w.w0[i][j]))* (1 + w.f0(neighbours0,neighbours1)/neighbours0 * dt);
+        nw1ij = ((1-moveRatio) * w.w1[i][j] + moveRatio* (neighbours1 - w.w1[i][j]))* (1 + w.f1(neighbours0,neighbours1)/neighbours1 * dt);
       }
       nw0[i][j] = nw0ij;
       ntotalw0 += nw0ij;
