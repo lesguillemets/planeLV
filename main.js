@@ -12,7 +12,7 @@ var moveRatio = 0.01;
 
 // {{{ SETUP
 function setUp(wCanv0,wCanv1,gCanv){
-  var alpha = 2.1, beta=2.0; k0=200; k1=200; r0=2.0;r1=1.2;
+  var alpha = 1.1, beta=1.1; k0=200; k1=200; r0=1.02;r1=1.1;
   var _w = {
     alpha:alpha, beta:beta, k0:k0, k1:k1,
     r0:r0, r1:r1,
@@ -21,7 +21,7 @@ function setUp(wCanv0,wCanv1,gCanv){
     wCanv0 : wCanv0, wCanv1 : wCanv1, gCanv : gCanv,
     wCtx0:undefined, wCtx1:undefined, gCtx:undefined,
     f0: undefined, f1:undefined,
-    options : { method:"moving", init:"random"}
+    options : { method:"moving", init:"rl"}
   };
   // prepare contexts
   _w['wCtx0'] = wCanv0.getContext('2d');
@@ -29,10 +29,10 @@ function setUp(wCanv0,wCanv1,gCanv){
   _w['gCtx'] = gCanv.getContext('2d');
   // updaters
   _w.f0 = function(x,y){
-    return r0*(1-(x+alpha*y)/k0)*x;
+    return r0*(1-(x+alpha*y)/k0);
   };
   _w.f1 = function(x,y){
-    return r1*(1-(beta*x+y)/k1)*y;
+    return r1*(1-(beta*x+y)/k1);
   };
   // initialise population
   var totalw0=0;
@@ -50,12 +50,8 @@ function setUp(wCanv0,wCanv1,gCanv){
         w1ij = Math.floor(Math.random()*initialPopMax);
       }
       else if (_w.options.init === "rl"){
-        if (j < size/2){
-          w0ij = 0; w1ij = 10;
-        }
-        else {
-          w1ij = 0; w0ij = 10;
-        }
+        w0ij = Math.floor(Math.random()*initialPopMax*(j/size));
+        w1ij = Math.floor(Math.random()*initialPopMax*(1-j/size));
       }
       w0[i][j] = w0ij;
       totalw0 += w0ij;
@@ -132,14 +128,14 @@ function updateWorld(w){
       var nw0ij, nw1ij;
       if (w.options.method === "simple"){
         // dx/dt = r0(1- neighboursx*alpha neighboursy)*x
-        nw0ij = w.w0[i][j] * (1 + w.f0(neighbours0,neighbours1)/neighbours0 * dt);
-        nw1ij = w.w1[i][j] * (1 + w.f1(neighbours0,neighbours1)/neighbours1 * dt);
+        nw0ij = w.w0[i][j] * (1 + w.f0(neighbours0,neighbours1) * dt);
+        nw1ij = w.w1[i][j] * (1 + w.f1(neighbours0,neighbours1) * dt);
         // var nw0ij = w.w0[i][j] + w.f0(neighbours0,neighbours1)*dt;
         // var nw1ij = w.w1[i][j] + w.f1(neighbours0,neighbours1)*dt;
       }
       else if (w.options.method === "moving"){
-        nw0ij = ((1-moveRatio) * w.w0[i][j] + moveRatio* (neighbours0 - w.w0[i][j])/8)* (1 + w.f0(neighbours0,neighbours1)/neighbours0 * dt);
-        nw1ij = ((1-moveRatio) * w.w1[i][j] + moveRatio* (neighbours1 - w.w1[i][j])/8)* (1 + w.f1(neighbours0,neighbours1)/neighbours1 * dt);
+        nw0ij = ((1-moveRatio) * w.w0[i][j] + moveRatio* (neighbours0 - w.w0[i][j])/8)* (1 + w.f0(neighbours0,neighbours1) * dt);
+        nw1ij = ((1-moveRatio) * w.w1[i][j] + moveRatio* (neighbours1 - w.w1[i][j])/8)* (1 + w.f1(neighbours0,neighbours1) * dt);
       }
       nw0[i][j] = nw0ij;
       ntotalw0 += nw0ij;
