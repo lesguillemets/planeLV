@@ -5,8 +5,8 @@ var aColour = "#ffaa00";
 var bColour = "#00aaFF";
 var gridSize = 2;
 // draws the world every n steps
-var drawEvery = 10;
-var dt = 0.5;
+var drawEvery = 100;
+var dt = 0.01;
 // }}}
 
 // {{{ SETUP
@@ -74,6 +74,8 @@ function updateWorld(w){
   var nw0 = new Array(size);
   var nw1 = new Array(size);
   // updating inside
+  var nmaxw0 = 0;
+  var nmaxw1 = 0;
   for (var i=1; i<(size-1); i++){
     nw0[i] = new Array(size);
     nw1[i] = new Array(size);
@@ -88,8 +90,6 @@ function updateWorld(w){
         }
       }
       // }}}
-      var nmaxw0 = 0;
-      var nmaxw1 = 0;
       // dx/dt = r0(1- neighboursx*alpha neighboursy)*x
       var nw0ij = w.w0[i][j] * (1 + w.f0(neighbours0,neighbours1)/neighbours0 * dt);
       // var nw0ij = w.w0[i][j] + w.f0(neighbours0,neighbours1)*dt;
@@ -112,21 +112,23 @@ function updateWorld(w){
   w.w1 = nw1;
   w.maxw0 = nmaxw0;
   w.maxw1 = nmaxw1;
-  console.log(nmaxw0);
   return 0;
 }
 
 function freshWorld(w){
-  w.wCanv0.width = w.wCanv0.width;
-  w.wCanv1.height = w.wCanv1.height;
+  w.wCtx0.clearRect(0,0,size*gridSize,size*gridSize);
+  w.wCtx1.clearRect(0,0,size*gridSize,size*gridSize);
 }
 
 
 function mainLoop(w){
-  for (var i=0; i<12; i++){
+  for (var i=0; i<drawEvery; i++){
     updateWorld(w);
   }
+  freshWorld(w);
   showWorld(w);
+  console.log(w.maxw0);
+  setTimeout(function(){mainLoop(w);},200);
 }
 
 function main(){
