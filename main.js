@@ -19,7 +19,8 @@ function setUp(wCanv0,wCanv1,gCanv){
     w1:undefined, maxw1: 0, totalw1:0,
     wCanv0 : wCanv0, wCanv1 : wCanv1, gCanv : gCanv,
     wCtx0:undefined, wCtx1:undefined, gCtx:undefined,
-    f0: undefined, f1:undefined
+    f0: undefined, f1:undefined,
+    options : { method:"simple" }
   };
   // prepare contexts
   _w['wCtx0'] = wCanv0.getContext('2d');
@@ -116,17 +117,20 @@ function updateWorld(w){
         }
       }
       // }}}
-      // dx/dt = r0(1- neighboursx*alpha neighboursy)*x
-      var nw0ij = w.w0[i][j] * (1 + w.f0(neighbours0,neighbours1)/neighbours0 * dt);
-      // var nw0ij = w.w0[i][j] + w.f0(neighbours0,neighbours1)*dt;
-        nw0[i][j] = nw0ij;
-        ntotalw0 += nw0ij;
-        if (nw0ij > nmaxw0) { nmaxw0 = nw0ij ;}
-      var nw1ij = w.w1[i][j] * (1 + w.f1(neighbours0,neighbours1)/neighbours1 * dt);
-      // var nw1ij = w.w1[i][j] + w.f1(neighbours0,neighbours1)*dt;
-        nw1[i][j] = nw1ij;
-        ntotalw1 += nw1ij;
-        if (nw1ij > nmaxw1) { nmaxw1 = nw1ij ;}
+      var nw0ij, nw1ij;
+      if (w.options.method === "simple"){
+        // dx/dt = r0(1- neighboursx*alpha neighboursy)*x
+        nw0ij = w.w0[i][j] * (1 + w.f0(neighbours0,neighbours1)/neighbours0 * dt);
+        nw1ij = w.w1[i][j] * (1 + w.f1(neighbours0,neighbours1)/neighbours1 * dt);
+        // var nw0ij = w.w0[i][j] + w.f0(neighbours0,neighbours1)*dt;
+        // var nw1ij = w.w1[i][j] + w.f1(neighbours0,neighbours1)*dt;
+      }
+      nw0[i][j] = nw0ij;
+      ntotalw0 += nw0ij;
+      if (nw0ij > nmaxw0) { nmaxw0 = nw0ij ;}
+      nw1[i][j] = nw1ij;
+      ntotalw1 += nw1ij;
+      if (nw1ij > nmaxw1) { nmaxw1 = nw1ij ;}
     }
   }
   // border are set to zero
