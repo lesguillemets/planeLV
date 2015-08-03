@@ -11,7 +11,7 @@ var dt = 0.01;
 
 // {{{ SETUP
 function setUp(wCanv0,wCanv1,gCanv){
-  var alpha = 0.1, beta=0.2; k0=100; k1=300; r0=1.9;r1=1.4;
+  var alpha = 1.4, beta=1.9; k0=100; k1=100; r0=2.0;r1=2.0;
   var _w = {
     alpha:alpha, beta:beta, k0:k0, k1:k1,
     r0:r0, r1:r1,
@@ -61,11 +61,13 @@ function showWorld(w){
   for (var i=0; i<size;i++){
     for(var j=0; j<size; j++){
       // draw for A
-      w.wCtx0.fillStyle = "rgba(" + (Math.floor(w.w0[i][j]*255/m0)) + ",0,0,0.5)";
-      w.wCtx0.fillRect(i*gridSize,j*gridSize,gridSize,gridSize);
+      // w.wCtx0.fillStyle = "rgba(" + (Math.floor(w.w0[i][j]*255/m0)) + ",0,0,0.5)";
+      w.wCtx0.fillStyle = "rgb(" + (Math.floor(w.w0[i][j]*255/m0)) + ",0,0)";
+      w.wCtx0.fillRect(i*gridSize,j*gridSize,gridSize,gridSize/2);
       // draw for B
-      w.wCtx1.fillStyle = "rgba(0," + (Math.floor(w.w1[i][j]*255/m1)) + ",0,0.5)";
-      w.wCtx1.fillRect(i*gridSize,j*gridSize,gridSize,gridSize);
+      // w.wCtx1.fillStyle = "rgba(0," + (Math.floor(w.w1[i][j]*255/m1)) + ",0,0.5)";
+      w.wCtx1.fillStyle = "rgb(0," + (Math.floor(w.w1[i][j]*255/m1)) + ",0)";
+      w.wCtx1.fillRect(i*gridSize,j*gridSize+(gridSize/2),gridSize,gridSize/2);
     }
   }
 } // }}}
