@@ -1,11 +1,11 @@
 // globals {{{
-var size=400;
+var size=200;
 var initialPopMax = 10;
 var aColour = "#ffaa00";
 var bColour = "#00aaFF";
-var gridSize = 2;
+var gridSize = 4;
 // draws the world every n steps
-var drawEvery = 100;
+var drawEvery = 50;
 var dt = 0.01;
 // }}}
 
@@ -62,11 +62,13 @@ function showWorld(w){
     for(var j=0; j<size; j++){
       // draw for A
       // w.wCtx0.fillStyle = "rgba(" + (Math.floor(w.w0[i][j]*255/m0)) + ",0,0,0.5)";
-      w.wCtx0.fillStyle = "rgb(" + (Math.floor(w.w0[i][j]*255/m0)) + ",0,0)";
+      // w.wCtx0.fillStyle = "rgb(" + (Math.floor(w.w0[i][j]*255/m0)) + ",0,0)";
+      w.wCtx0.fillStyle = "rgb(" + (Math.floor(w.w0[i][j]*255/100)) + ",0,0)";
       w.wCtx0.fillRect(i*gridSize,j*gridSize,gridSize,gridSize/2);
       // draw for B
       // w.wCtx1.fillStyle = "rgba(0," + (Math.floor(w.w1[i][j]*255/m1)) + ",0,0.5)";
-      w.wCtx0.fillStyle = "rgb(0," + (Math.floor(w.w1[i][j]*255/m1)) + ",0)";
+      // w.wCtx0.fillStyle = "rgb(0," + (Math.floor(w.w1[i][j]*255/m1)) + ",0)";
+      w.wCtx0.fillStyle = "rgb(0," + (Math.floor(w.w1[i][j]*255/100)) + ",0)";
       w.wCtx0.fillRect(i*gridSize,j*gridSize+(gridSize/2),gridSize,gridSize/2);
     }
   }
