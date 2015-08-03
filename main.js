@@ -11,12 +11,12 @@ var dt = 0.01;
 
 // {{{ SETUP
 function setUp(wCanv0,wCanv1,gCanv){
-  var alpha = 1.9, beta=1.9; k0=100; k1=100; r0=2.0;r1=2.0;
+  var alpha = 3.9, beta=2.9; k0=200; k1=200; r0=2.0;r1=2.0;
   var _w = {
     alpha:alpha, beta:beta, k0:k0, k1:k1,
     r0:r0, r1:r1,
-    w0:undefined, maxw0: 0,
-    w1:undefined, maxw1: 0,
+    w0:undefined, maxw0: 0, totalw0:0,
+    w1:undefined, maxw1: 0, totalw1:0,
     wCanv0 : wCanv0, wCanv1 : wCanv1, gCanv : gCanv,
     wCtx0:undefined, wCtx1:undefined, gCtx:undefined,
     f0: undefined, f1:undefined
@@ -33,6 +33,8 @@ function setUp(wCanv0,wCanv1,gCanv){
     return r1*(1-(beta*x+y)/k1)*y;
   };
   // initialise population
+  var totalw0=0;
+  var totalw1=0;
   var w0 = new Array(size);
   var w1 = new Array(size);
   for (var i=0; i<size;i++){
@@ -41,15 +43,19 @@ function setUp(wCanv0,wCanv1,gCanv){
     for(var j=0; j<size; j++){
       // initialise with a random value
       var w0ij = Math.floor(Math.random()*initialPopMax);
-      w0[i][j] = w0ij;
-      if (w0ij > _w.maxw0) { _w.maxw0 = w0ij ;}
+        w0[i][j] = w0ij;
+        totalw0 += w0ij;
+        if (w0ij > _w.maxw0) { _w.maxw0 = w0ij ;}
       var w1ij = Math.floor(Math.random()*initialPopMax);
-      w1[i][j] = w1ij;
-      if (w1ij > _w.maxw1) { _w.maxw1 = w1ij ;}
+        w1[i][j] = w1ij;
+        totalw1 += w1ij;
+        if (w1ij > _w.maxw1) { _w.maxw1 = w1ij ;}
     }
   }
   _w.w0 = w0;
   _w.w1 = w1;
+  _w.totalw0 = totalw0;
+  _w.totalw1 = totalw1;
   return _w;
 }
 // }}}
@@ -80,6 +86,8 @@ function updateWorld(w){
   // updating inside
   var nmaxw0 = 0;
   var nmaxw1 = 0;
+  var ntotalw0 = 0;
+  var ntotalw1 = 0;
   for (var i=1; i<(size-1); i++){
     nw0[i] = new Array(size);
     nw1[i] = new Array(size);
@@ -98,10 +106,12 @@ function updateWorld(w){
       var nw0ij = w.w0[i][j] * (1 + w.f0(neighbours0,neighbours1)/neighbours0 * dt);
       // var nw0ij = w.w0[i][j] + w.f0(neighbours0,neighbours1)*dt;
         nw0[i][j] = nw0ij;
+        ntotalw0 += nw0ij;
         if (nw0ij > nmaxw0) { nmaxw0 = nw0ij ;}
       var nw1ij = w.w1[i][j] * (1 + w.f1(neighbours0,neighbours1)/neighbours1 * dt);
       // var nw1ij = w.w1[i][j] + w.f1(neighbours0,neighbours1)*dt;
         nw1[i][j] = nw1ij;
+        ntotalw1 += nw1ij;
         if (nw1ij > nmaxw1) { nmaxw1 = nw1ij ;}
     }
   }
@@ -116,6 +126,8 @@ function updateWorld(w){
   w.w1 = nw1;
   w.maxw0 = nmaxw0;
   w.maxw1 = nmaxw1;
+  w.totalw0 = ntotalw0;
+  w.totalw1 = ntotalw1;
   return 0;
 }
 
